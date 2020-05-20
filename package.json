@@ -1,0 +1,40 @@
+{
+  "name": "stock-olio",
+  "version": "1.0.0",
+  "description": "Stock portfolio management application",
+  "main": "index.js",
+  "scripts": {
+    "build-dev": "webpack -d --watch",
+    "build": "webpack -p",
+    "start": "node server/",
+    "start-dev": "nodemon server/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidlam296/Stock-olio.git"
+  },
+  "author": "David Lam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidlam296/Stock-olio/issues"
+  },
+  "homepage": "https://github.com/davidlam296/Stock-olio#readme",
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.5.3",
+    "nodemon": "^2.0.4",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
