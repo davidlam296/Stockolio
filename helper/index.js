@@ -1,39 +1,41 @@
-import { P } from '../database/dummy_data';
+import axios from 'axios';
 
 // Reference for transaction types -- only buying required currently
 const TYPES_OF_TRANS = ['BUY', 'SELL'];
 
-// Get current prices of stocks from API
+// Get current stock data from IEX API and return promise.
 const updatePrices = (portfolio) => {
-  const stocks = [];
+  const stocksToSearch = [...portfolio.stocks.keys()];
+  return axios
+    .get('/api/prices', { params: { stocks: stocksToSearch } })
+    .then((result) => {
+      const stocks = [];
+      for (const stock of result.data) {
+        const stockData = portfolio.stocks.get(stock.symbol);
+        
+        // Using previous close price as open price was returning null
+        stockData.openValue = (
+          stock.previousClose * stockData.quantity
+        ).toFixed(2);
+        stockData.currentValue = (
+          stock.latestPrice * stockData.quantity
+        ).toFixed(2);
 
-  // Access API to get stock information
-  // const stocksToSearch = [];
+        stocks.push(stockData);
 
-  // for (const stock of portfolio.stocks.keys()) {
-  //   stocksToSearch.push(stock);
-  // }
-
-  // Dummy data prices
-
-  for (const stock of P) {
-    const stockData = portfolio.stocks.get(stock.symbol);
-
-    stockData.openValue = (stock.open * stockData.quantity).toFixed(2);
-    stockData.currentValue = (stock.latest * stockData.quantity).toFixed(2);
-
-    stocks.push(stockData);
-
-    portfolio.total = (
-      Number(portfolio.total) + Number(stockData.currentValue)
-    ).toFixed(2);
-  }
-
-  portfolio.stocks = stocks;
-
-  return portfolio;
+        portfolio.total = (
+          Number(portfolio.total) + Number(stockData.currentValue)
+        ).toFixed(2);
+      }
+      portfolio.stocks = stocks;
+    })
+    .catch((err) => {
+      portfolio.error = true;
+    })
+    .then(() => portfolio);
 };
 
+// Format transaction data and get total number of stocks user owns before getting stock data.
 export const formatTransactions = (transactions) => {
   /*
   Required Info:

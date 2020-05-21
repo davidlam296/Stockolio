@@ -8,7 +8,12 @@ export const Portfolio = ({ transactions, userInfo }) => {
 
   // update portfolio if transactions change
   useEffect(() => {
-    if (transactions.length > 0) setPortData(formatTransactions(transactions));
+    if (transactions.length > 0) {
+      formatTransactions(transactions).then((portfolio) => {
+        console.log(portfolio);
+        setPortData(portfolio);
+      });
+    }
   }, [transactions]);
 
   return (
@@ -16,27 +21,29 @@ export const Portfolio = ({ transactions, userInfo }) => {
       <h1>Portfolio</h1>
       <div id="port-container">
         <div>
-          {portData.stocks
-            ? portData.stocks.map((stock) => {
-                return (
-                  <div key={`${userInfo.id}+${stock.symbol}`}>
-                    <p>{`${stock.symbol} - ${stock.quantity}`}</p>
-                    <p>
-                      $
-                      <span
-                        className={
-                          stock.openValue > stock.currentValue
-                            ? 'lower-price'
-                            : 'higher-price'
-                        }
-                      >
-                        {stock.currentValue}
-                      </span>
-                    </p>
-                  </div>
-                );
-              })
-            : null}
+          {portData.stocks && !portData.error ? (
+            portData.stocks.map((stock) => {
+              return (
+                <div key={`${userInfo.id}+${stock.symbol}`}>
+                  <p>{`${stock.symbol} - ${stock.quantity}`}</p>
+                  <p>
+                    $
+                    <span
+                      className={
+                        stock.openValue > stock.currentValue
+                          ? 'lower-price'
+                          : 'higher-price'
+                      }
+                    >
+                      {stock.currentValue}
+                    </span>
+                  </p>
+                </div>
+              );
+            })
+          ) : (
+            <p>{'There is an issue retrieving stock price data.'}</p>
+          )}
         </div>
         <Purchase />
       </div>
