@@ -3,7 +3,7 @@ const TYPE_OF_TRANS = ['BUY', 'SELL'];
 
 export const Transactions = ({ transactions }) => {
   return (
-    <div>
+    <div id="transactions">
       <h1>Transactions</h1>
       {transactions.map((t) => (
         <p key={t.id}>
