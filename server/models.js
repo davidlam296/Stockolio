@@ -1,6 +1,9 @@
 const db = require('../database');
-const TYPES_OF_TRANSACTIONS = [0]; // 0 is a buy transaction
 
+// 0 is a buy transaction
+const TYPES_OF_TRANSACTIONS = [0]; 
+
+// Select transactions based on user ID from database.
 module.exports.getTransactions = (userId) => {
   const text = 'SELECT * FROM transactions WHERE user_id = $1';
   const values = [userId];
@@ -8,6 +11,13 @@ module.exports.getTransactions = (userId) => {
   return db.query(text, values);
 };
 
+/*  Insert transaction into database.
+    Required Fields:
+      type: type of transaction,
+      ticker: stock symbol,
+      quantity: number of stocks purchased,
+      cost: total per share,
+      userId: user ID associated with transaction  */
 module.exports.addTransaction = (transaction) => {
   if (!TYPES_OF_TRANSACTIONS.includes(transaction.type))
     throw new Error('Wrong transaction type');

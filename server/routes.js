@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { getPrice } = require('../helper/api');
 const { getTransactions, addTransaction } = require('./models');
 
-// Retrieves current stock information, based on ticker symbols
+// Retrieves current stock information, based on ticker symbol and sends it to client.
 router.get('/api/prices', (req, res) => {
   const prices = [];
 
@@ -19,7 +19,7 @@ router.get('/api/prices', (req, res) => {
     });
 });
 
-// Retrieves transaction data of a user, based on user ID
+// Retrieves transaction data of a user, based on user ID and sends it to client.
 router.get('/transactions', (req, res) => {
   // *** Defaults to first user in database for development; prior to authentication set up ***
   getTransactions(req.query.userId || 1)
@@ -32,10 +32,15 @@ router.get('/transactions', (req, res) => {
     });
 });
 
-// Saves transaction information into database
+// Saves transaction information into database, based on requset from client.
 router.post('/transactions', (req, res) => {
-  console.log(req.body);
-  addTransaction(req.body)
+  getPrice(req.body.ticker)
+    .then((result) => {
+      req.body.cost = result.latestPrice.toFixed(2);
+    })
+    .then(() => {
+      return addTransaction(req.body);
+    })
     .then(() => {
       res.status(201).send('Transaction Complete');
     })

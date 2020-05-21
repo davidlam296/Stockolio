@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Reference for transaction types -- only buying required currently
-const TYPES_OF_TRANS = ['BUY', 'SELL'];
+const TYPES_OF_TRANS = ['BUY'];
 
 // Get current stock data from IEX API and return promise.
 const updatePrices = (portfolio) => {
@@ -12,8 +12,8 @@ const updatePrices = (portfolio) => {
       const stocks = [];
       for (const stock of result.data) {
         const stockData = portfolio.stocks.get(stock.symbol);
-        
-        // Using previous close price as open price was returning null
+
+        // Using previous close price; free, sandbox API doesn't provide open price for all stocks
         stockData.openValue = (
           stock.previousClose * stockData.quantity
         ).toFixed(2);
@@ -36,12 +36,11 @@ const updatePrices = (portfolio) => {
 };
 
 // Format transaction data and get total number of stocks user owns before getting stock data.
+
+/*  Required Info:
+      Total Value of Stocks, 
+      [{ Ticker Symbol, # of Shares, Current Value, Open Price Value }, ...]  */
 export const formatTransactions = (transactions) => {
-  /*
-  Required Info:
-  Total Value
-  Ticker - # of Shares - Value of Stock
-  */
   const portfolio = { total: 0, stocks: new Map() };
 
   for (const trans of transactions) {
