@@ -9,5 +9,7 @@ module.exports.getPrice = (symbol) => {
       },
     })
     .then((result) => result.data)
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      throw err;
+    });
 };
