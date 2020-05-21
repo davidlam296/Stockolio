@@ -39,3 +39,21 @@ export const T = [
     user_id: 1,
   },
 ];
+
+export const P = [
+  {
+    symbol: 'AAPL',
+    open: 330.55,
+    latest: 329.41
+  },
+  {
+    symbol: 'F',
+    open: 5.15,
+    latest: 5.29
+  },
+  {
+    symbol: 'HD',
+    open: 240.12,
+    latest: 242.15
+  },
+];
