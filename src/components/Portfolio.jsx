@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Purchase } from './Purchase';
 import { formatTransactions } from '../../helper';
 
-export const Portfolio = ({ transactions, userInfo }) => {
+export const Portfolio = ({ transactions, userInfo, updateTransactions }) => {
   // portData is the formatted data that would be displayed in the Portfolio component, based on transactions
   const [portData, setPortData] = useState([]);
 
@@ -10,7 +10,6 @@ export const Portfolio = ({ transactions, userInfo }) => {
   useEffect(() => {
     if (transactions.length > 0) {
       formatTransactions(transactions).then((portfolio) => {
-        console.log(portfolio);
         setPortData(portfolio);
       });
     }
@@ -45,7 +44,7 @@ export const Portfolio = ({ transactions, userInfo }) => {
             <p>{'There is an issue retrieving stock price data.'}</p>
           )}
         </div>
-        <Purchase />
+        <Purchase userInfo={userInfo} updateTransactions={updateTransactions} />
       </div>
     </div>
   );
