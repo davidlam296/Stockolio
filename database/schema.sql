@@ -16,7 +16,7 @@ CREATE TABLE transactions (
   ticker_symbol VARCHAR(10) NOT NULL,
   quantity INTEGER NOT NULL,
   cost DECIMAL NOT NULL,
-  user_id INTEGER REFERENCES users(id)
+  user_id INTEGER NOT NULL REFERENCES users(id)
 );
 
 CREATE INDEX trans_users ON transactions(user_id);
