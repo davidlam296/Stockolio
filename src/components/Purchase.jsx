@@ -16,7 +16,7 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
       return;
     }
 
-    if (!Number.isInteger(Number(quantity))) {
+    if (!Number.isInteger(Number(quantity)) && quantity > 0) {
       // Quantity input is invalid. Display warning message.
       setValidQuantity(false);
       return;
@@ -38,7 +38,9 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
       })
       .then((result) => {
         transaction.cost = Number(result.data[0].latestPrice).toFixed(2);
-        const total = (transaction.quantity * transaction.cost).toFixed(2);
+        const total = Number(transaction.quantity * transaction.cost).toFixed(
+          2
+        );
 
         // Not enough funds. Display warning message.
         if (total > userInfo.balance) {

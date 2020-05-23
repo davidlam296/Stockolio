@@ -32,11 +32,14 @@ export const App = (props) => {
 
   // Temporarily grab user data prior to setting up auth
   useEffect(() => {
-    console.log('this should only run once');
     axios
       .get('/user')
       .then((results) => {
-        setUserInfo(results.data);
+        setUserInfo(
+          Object.assign({}, results.data, {
+            balance: Number(results.data.balance),
+          })
+        );
         updateTransactions();
       })
       .catch((err) => console.log('ERROR: ', err));

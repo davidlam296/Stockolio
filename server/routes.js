@@ -18,6 +18,7 @@ router.get('/api/prices', (req, res) => {
         res.status(200).send(data);
       })
       .catch((err) => {
+        // console.log('ERROR :', err);
         res.sendStatus(500);
       });
   }
