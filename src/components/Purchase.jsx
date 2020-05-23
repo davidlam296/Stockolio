@@ -10,13 +10,6 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
   const [validBuy, setValidBuy] = useState(null);
 
   const handleSubmit = () => {
-    const transaction = {
-      type: 0,
-      ticker,
-      quantity: Number(quantity),
-      userId: userInfo.id,
-    };
-
     if (typeof ticker !== 'string' || ticker.trim().length < 1) {
       // Ticker input is empty and invalid. Display warning message.
       setValidTicker(false);
@@ -28,6 +21,13 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
       setValidQuantity(false);
       return;
     }
+
+    const transaction = {
+      type: 0,
+      ticker: ticker.toUpperCase(),
+      quantity: Number(quantity),
+      userId: userInfo.id,
+    };
 
     setValidTicker(true);
     setValidQuantity(true);
@@ -53,7 +53,7 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
             .post('/transactions', transaction)
             .then((newBalance) => {
               updateTransactions();
-              updateBalance(newBalance);
+              updateBalance(newBalance.data);
             })
             .catch((err) => {
               console.log('There was an error processing transaction: ', err);
@@ -71,7 +71,7 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
 
   return (
     <div>
-      <h1>{`Cash - $${userInfo.balance ? userInfo.balance.toFixed(2) : 0}`}</h1>
+      <h1>{`Cash - $${userInfo.balance ? userInfo.balance : 0}`}</h1>
       <h3>Stock Symbol</h3>
       <input
         value={ticker}

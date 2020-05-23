@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { getPrice } = require('../helper/api');
-const { getTransactions, addTransaction } = require('./models');
+const { getTransactions, addTransaction, getUserData } = require('./models');
 
 // Retrieves current stock information, based on ticker symbol and sends it to client.
 router.get('/api/prices', (req, res) => {
@@ -24,7 +24,16 @@ router.get('/api/prices', (req, res) => {
 });
 
 // Retrieves user information from database -- login
-router.get('/api/user', (req, res) => {});
+router.get('/user', (req, res) => {
+  getUserData()
+    .then((result) => {
+      res.status(200).send(result.rows[0]);
+    })
+    .catch((err) => {
+      // console.log('ERROR: ', err);
+      res.sendStatus(400);
+    });
+});
 
 // Retrieves transaction data of a user, based on user ID and sends it to client.
 router.get('/transactions', (req, res) => {

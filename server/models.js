@@ -1,5 +1,20 @@
 const pool = require('../database');
 
+// Function needs to be revised later to search based on password for authentication
+module.exports.getUserData = (id) => {
+  return (async () => {
+    const client = await pool.connect();
+    try {
+      return await client.query(
+        'SELECT id, name, email, balance FROM users WHERE id = $1',
+        [1]
+      );
+    } finally {
+      client.release();
+    }
+  })();
+};
+
 // 0 is a buy transaction
 const TYPES_OF_TRANSACTIONS = [0];
 
@@ -8,11 +23,10 @@ module.exports.getTransactions = (userId) => {
   return (async () => {
     const client = await pool.connect();
     try {
-      const response = await client.query(
+      return await client.query(
         'SELECT * FROM transactions WHERE user_id = $1',
         [userId]
       );
-      return response;
     } finally {
       client.release();
     }

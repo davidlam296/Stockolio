@@ -4,13 +4,12 @@ import { Transactions } from './Transactions';
 import { Navigation } from './Navigation';
 import axios from 'axios';
 
-// import { U, T } from '../../database/dummy_data';
-
 // import { Login } from './Login';
 // import { Register } from './Register';
 
 const PAGE_TYPES = ['Portfolio', 'Transactions'];
 
+// User Info should be passed down props after authentication
 export const App = (props) => {
   const [transactions, setTransactions] = useState({});
   const [userInfo, setUserInfo] = useState({});
@@ -30,6 +29,18 @@ export const App = (props) => {
   const updateBalance = (newBalance) => {
     setUserInfo(Object.assign({}, userInfo, { balance: newBalance }));
   };
+
+  // Temporarily grab user data prior to setting up auth
+  useEffect(() => {
+    console.log('this should only run once');
+    axios
+      .get('/user')
+      .then((results) => {
+        setUserInfo(results.data);
+        updateTransactions();
+      })
+      .catch((err) => console.log('ERROR: ', err));
+  }, []);
 
   return (
     <div>
