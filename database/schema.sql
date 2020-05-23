@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -8,7 +8,7 @@ CREATE TABLE users (
   balance INTEGER NOT NULL
 );
 
-DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS transactions CASCADE;
 		
 CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
@@ -20,3 +20,16 @@ CREATE TABLE transactions (
 );
 
 CREATE INDEX trans_users ON transactions(user_id);
+
+CREATE FUNCTION check_balance() RETURNS trigger AS $check_balance$
+  BEGIN
+    IF NEW.balance < 0 THEN
+      RAISE EXCEPTION 'balance can not drop below 0';
+    END IF;
+
+    RETURN NEW;
+  END;
+$check_balance$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_balance BEFORE INSERT OR UPDATE ON users
+    FOR EACH ROW EXECUTE PROCEDURE check_balance();
