@@ -17,13 +17,17 @@ export const App = (props) => {
 
   const updateTransactions = () => {
     axios
-      .get('/transactions')
+      .get('/transactions', { params: { userId: 1 } })
       .then((result) => {
         setTransactions(result.data);
       })
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  const updateBalance = (newBalance) => {
+    setUserInfo(Object.assign({}, userInfo, { balance: newBalance }));
   };
 
   return (
@@ -36,6 +40,7 @@ export const App = (props) => {
           transactions={transactions}
           userInfo={userInfo}
           updateTransactions={updateTransactions}
+          updateBalance={updateBalance}
         />
       )}
     </div>
