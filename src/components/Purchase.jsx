@@ -4,10 +4,9 @@ import axios from 'axios';
 export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
   const [ticker, setTicker] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [warningMessage, setWarningMessage] = useState('');
   const [validTicker, setValidTicker] = useState(null);
   const [validQuantity, setValidQuantity] = useState(null);
-  const [validBuy, setValidBuy] = useState(null);
+  const [validBuy, setValidBuy] = useState({ valid: null, message: '' });
 
   const handleSubmit = () => {
     if (typeof ticker !== 'string' || ticker.trim().length < 1) {
@@ -16,7 +15,7 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
       return;
     }
 
-    if (!Number.isInteger(Number(quantity)) && quantity > 0) {
+    if (!Number.isInteger(Number(quantity)) || quantity <= 0) {
       // Quantity input is invalid. Display warning message.
       setValidQuantity(false);
       return;
@@ -44,10 +43,10 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
 
         // Not enough funds. Display warning message.
         if (total > userInfo.balance) {
-          setValidBuy(false);
-          setWarningMessage(
-            `Insufficent funds. Unable to purchase ${quantity.transaction} share(s) of (${transaction.ticker}) at $${transaction.cost} each. Your remaining balance is ${userInfo.balance}. Total cost is $${total}.`
-          );
+          setValidBuy({
+            valid: false,
+            message: `Insufficent funds. Unable to purchase ${transaction.quantity} share(s) of (${transaction.ticker}) at $${transaction.cost} each. Your remaining balance is $${userInfo.balance}. Total cost is $${total}.`,
+          });
         } else {
           transaction.total = total;
           setValidBuy(true);
@@ -64,10 +63,11 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
       })
       .catch((err) => {
         // Potential issue with the API or ticker was invalid.
-        setValidBuy(false);
-        setWarningMessage(
-          'Please double-check stock ticker. Unable to get stock information and/or complete transaction.'
-        );
+        setValidBuy({
+          valid: false,
+          message:
+            'Please double-check stock ticker. Unable to get stock information and/or complete transaction.',
+        });
       });
   };
 
@@ -80,16 +80,20 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
         placeholder="Ticker"
         onChange={(e) => setTicker(e.target.value)}
       ></input>
-      <p>Warning Placeholder</p>
+      {validTicker === false ? (
+        <p>Invalid ticker symbol. Please re-enter.</p>
+      ) : null}
       <h3>Quantity</h3>
       <input
         value={quantity}
         placeholder="Quantity"
         onChange={(e) => setQuantity(e.target.value)}
       ></input>
-      <p>Warning Placeholder</p>
+      {validQuantity === false ? (
+        <p>Invalid quantity. Enter only positive, whole numbers.</p>
+      ) : null}
       <button onClick={handleSubmit}>Buy</button>
-      <p>Warning Placeholder</p>
+      {validBuy.valid === false ? <p>{validBuy.message}</p> : null}
     </div>
   );
 };
