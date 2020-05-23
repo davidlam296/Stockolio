@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-export const Purchase = ({ userInfo, updateTransactions }) => {
+export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
   const [ticker, setTicker] = useState('');
   const [quantity, setQuantity] = useState('');
   const [warningMessage, setWarningMessage] = useState('');
@@ -18,11 +18,13 @@ export const Purchase = ({ userInfo, updateTransactions }) => {
     };
 
     if (typeof ticker !== 'string' || ticker.trim().length < 1) {
+      // Ticker input is empty and invalid. Display warning message.
       setValidTicker(false);
       return;
     }
 
     if (!Number.isInteger(Number(quantity))) {
+      // Quantity input is invalid. Display warning message.
       setValidQuantity(false);
       return;
     }
@@ -36,28 +38,30 @@ export const Purchase = ({ userInfo, updateTransactions }) => {
       })
       .then((result) => {
         transaction.cost = Number(result.data[0].latestPrice).toFixed(2);
-        console.log(transaction.cost);
-        console.log(transaction.quantity);
-
         const total = (transaction.quantity * transaction.cost).toFixed(2);
-        console.log(total);
 
+        // Not enough funds. Display warning message.
         if (total > userInfo.balance) {
-          // Update warning. Not enough funds.
-          console.log('Too expensive');
           setValidBuy(false);
           setWarningMessage(
             `Insufficent funds. Unable to purchase ${quantity.transaction} share(s) of (${transaction.ticker}) at $${transaction.cost} each. Your remaining balance is ${userInfo.balance}. Total cost is $${total}.`
           );
         } else {
-          console.log('Transaction successful');
+          transaction.total = total;
           setValidBuy(true);
-          // add transaction
-          // update user balance
+          axios
+            .post('/transactions', transaction)
+            .then((newBalance) => {
+              updateTransactions();
+              updateBalance(newBalance);
+            })
+            .catch((err) => {
+              console.log('There was an error processing transaction: ', err);
+            });
         }
       })
       .catch((err) => {
-        // Update warning. Couldn't retrieve data from API, double-check Ticker Symbol
+        // Potential issue with the API or ticker was invalid.
         setValidBuy(false);
         setWarningMessage(
           'Please double-check stock ticker. Unable to get stock information and/or complete transaction.'
@@ -67,7 +71,7 @@ export const Purchase = ({ userInfo, updateTransactions }) => {
 
   return (
     <div>
-      <h1>{`Cash - $${userInfo.balance.toFixed(2)}`}</h1>
+      <h1>{`Cash - $${userInfo.balance ? userInfo.balance.toFixed(2) : 0}`}</h1>
       <h3>Stock Symbol</h3>
       <input
         value={ticker}

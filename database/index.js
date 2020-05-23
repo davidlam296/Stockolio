@@ -1,5 +1,5 @@
-const { Client } = require('pg');
-const client = new Client({
+const { Pool } = require('pg');
+const pool = new Pool({
   host: process.env.PG_HOST || 'localhost',
   port: process.env.PG_PORT || 5432,
   user: process.env.PG_USER || 'uncreative',
@@ -7,13 +7,11 @@ const client = new Client({
   database: process.env.PG_DATABASE || 'stockolio',
 });
 
-client
-  .connect()
-  .then(() => {
-    console.log('Connected to the database!');
-  })
-  .catch((err) => {
-    console.error('Failed to connect to database', err);
-  });
+(async () => {
+  const client = await pool.connect();
 
-module.exports = client;
+  console.log('Connected to the database!');
+  client.release();
+})().catch((err) => console.error('Failed to connect to database', err));
+
+module.exports = pool;

@@ -5,7 +5,7 @@ CREATE TABLE users (
   name VARCHAR(30) NOT NULL,
   password VARCHAR(255) NOT NULL,
   email VARCHAR(100) NOT NULL,
-  balance INTEGER NOT NULL
+  balance DECIMAL NOT NULL
 );
 
 DROP TABLE IF EXISTS transactions CASCADE;
@@ -33,3 +33,5 @@ $check_balance$ LANGUAGE plpgsql;
 
 CREATE TRIGGER check_balance BEFORE INSERT OR UPDATE ON users
     FOR EACH ROW EXECUTE PROCEDURE check_balance();
+
+-- INSERT INTO users (name, password, email, balance) VALUES ('david','p@ssw0rd','david@email.com',5000.00);

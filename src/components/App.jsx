@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Portfolio } from './Portfolio';
 import { Transactions } from './Transactions';
 import { Navigation } from './Navigation';
-import { U, T } from '../../database/dummy_data';
 import axios from 'axios';
+
+// import { U, T } from '../../database/dummy_data';
 
 // import { Login } from './Login';
 // import { Register } from './Register';
@@ -11,8 +12,8 @@ import axios from 'axios';
 const PAGE_TYPES = ['Portfolio', 'Transactions'];
 
 export const App = (props) => {
-  const [transactions, setTransactions] = useState(T);
-  const [userInfo, setUserInfo] = useState(U);
+  const [transactions, setTransactions] = useState({});
+  const [userInfo, setUserInfo] = useState({});
   const [currentPage, setCurrentPage] = useState('portfolio');
 
   const updateTransactions = () => {
@@ -22,7 +23,7 @@ export const App = (props) => {
         setTransactions(result.data);
       })
       .catch((err) => {
-        console.error(err);
+        console.error('Could not get transactions', err);
       });
   };
 

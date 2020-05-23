@@ -1,14 +1,22 @@
-const db = require('../database');
+const pool = require('../database');
 
 // 0 is a buy transaction
-const TYPES_OF_TRANSACTIONS = [0]; 
+const TYPES_OF_TRANSACTIONS = [0];
 
 // Select transactions based on user ID from database.
 module.exports.getTransactions = (userId) => {
-  const text = 'SELECT * FROM transactions WHERE user_id = $1';
-  const values = [userId];
-
-  return db.query(text, values);
+  return (async () => {
+    const client = await pool.connect();
+    try {
+      const response = await client.query(
+        'SELECT * FROM transactions WHERE user_id = $1',
+        [userId]
+      );
+      return response;
+    } finally {
+      client.release();
+    }
+  })();
 };
 
 /*  Insert transaction into database.
@@ -16,7 +24,7 @@ module.exports.getTransactions = (userId) => {
       type: type of transaction,
       ticker: stock symbol,
       quantity: number of stocks purchased,
-      cost: total per share,
+      cost: cost per share,
       userId: user ID associated with transaction  */
 module.exports.addTransaction = (transaction) => {
   if (!TYPES_OF_TRANSACTIONS.includes(transaction.type))
@@ -30,15 +38,32 @@ module.exports.addTransaction = (transaction) => {
   if (isNaN(transaction.cost)) throw new Error('Invalid cost');
   if (isNaN(transaction.userId)) throw new Error('Invalid user ID');
 
-  const text =
-    'INSERT INTO transactions(type, ticker_symbol, quantity, cost, user_id) VALUES ($1, $2, $3, $4, $5)';
-  const values = [
-    transaction.type,
-    transaction.ticker,
-    transaction.quantity,
-    transaction.cost,
-    transaction.userId,
-  ];
+  return (async () => {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const response = await client.query(
+        `UPDATE users SET balance = balance - ${transaction.total} WHERE id = ${transaction.userId} RETURNING balance`
+      );
 
-  return db.query(text, values);
+      await client.query(
+        'INSERT INTO transactions(type, ticker_symbol, quantity, cost, user_id) VALUES ($1, $2, $3, $4, $5)',
+        [
+          transaction.type,
+          transaction.ticker,
+          transaction.quantity,
+          transaction.cost,
+          transaction.userId,
+        ]
+      );
+      await client.query('COMMIT');
+
+      return response;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  })();
 };
