@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const Login = (props) => (
   <div id="login">
@@ -7,5 +8,8 @@ export const Login = (props) => (
     <input></input>
     <p>Password:</p>
     <input></input>
+    <Link to="/register">
+      <p>Don't have an account?</p>
+    </Link>
   </div>
 );

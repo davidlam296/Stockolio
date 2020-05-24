@@ -6,8 +6,8 @@ const routes = require('./routes.js');
 const app = express();
 
 app.use(express.json());
-app.use('/', routes);
 app.use(express.static(path.join(__dirname, '../dist')));
+app.use('/', routes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Example app listening at port ${process.env.PORT}`);

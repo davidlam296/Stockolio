@@ -9,5 +9,7 @@ export const Register = (props) => (
     <input></input>
     <p>Password:</p>
     <input></input>
+    <p>Re-enter password:</p>
+    <input></input>
   </div>
 );

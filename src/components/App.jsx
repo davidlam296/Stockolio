@@ -4,9 +4,6 @@ import { Transactions } from './Transactions';
 import { Navigation } from './Navigation';
 import axios from 'axios';
 
-// import { Login } from './Login';
-// import { Register } from './Register';
-
 const PAGE_TYPES = ['Portfolio', 'Transactions'];
 
 // User Info should be passed down props after authentication

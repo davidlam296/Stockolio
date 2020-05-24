@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const path = require('path');
 const { getPrice } = require('../helper/api');
 const { getTransactions, addTransaction, getUserData } = require('./models');
 
@@ -62,6 +63,10 @@ router.post('/transactions', (req, res) => {
       // console.log('ERROR: ', err);
       res.sendStatus(400);
     });
+});
+
+router.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 module.exports = router;
