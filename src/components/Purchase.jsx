@@ -90,7 +90,7 @@ export const Purchase = ({ userInfo, updateTransactions, updateBalance }) => {
         onChange={(e) => setQuantity(e.target.value)}
       ></input>
       {validQuantity === false ? (
-        <p>Invalid quantity. Enter only positive, whole numbers.</p>
+        <p>Invalid quantity. Enter a positive, whole number only.</p>
       ) : null}
       <button onClick={handleSubmit}>Buy</button>
       {validBuy.valid === false ? <p>{validBuy.message}</p> : null}
