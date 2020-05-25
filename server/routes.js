@@ -1,7 +1,13 @@
 const router = require('express').Router();
-const path = require('path');
 const { getPrice } = require('../helper/api');
-const { getTransactions, addTransaction, getUserData } = require('./models');
+const { validateEmail } = require('../helper/validate');
+const {
+  getTransactions,
+  addTransaction,
+  getUserData,
+  checkExisting,
+  addUser,
+} = require('./models');
 
 // Retrieves current stock information, based on ticker symbol and sends it to client.
 router.get('/prices', (req, res) => {
@@ -39,8 +45,30 @@ router.get('/user', (req, res) => {
 
 // Create a user, check if user exists first, save into database otherwise
 router.post('/user', (req, res) => {
+  const { email, password, name } = req.body;
 
-})
+  if (!email || !password || !name) {
+    res.sendStatus(400);
+  } else if (!validateEmail(email)) {
+    res.sendStatus(422);
+  } else {
+    checkExisting(req.body.email)
+      .then((result) => {
+        if (result.rows.length > 0) {
+          throw new Error('duplicate');
+        } else {
+          return addUser(req.body);
+        }
+      })
+      .then(() => {
+        res.sendStatus(201);
+      })
+      .catch((err) => {
+        // console.log('ERROR: ', err);
+        err.message === 'duplicate' ? res.sendStatus(409) : res.sendStatus(400);
+      });
+  }
+});
 
 // Retrieves transaction data of a user, based on user ID and sends it to client.
 router.get('/transactions', (req, res) => {

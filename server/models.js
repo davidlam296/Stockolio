@@ -1,4 +1,6 @@
 const pool = require('../database');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 // Function needs to be revised later to search based on password for authentication
 module.exports.getUserData = (id) => {
@@ -7,7 +9,39 @@ module.exports.getUserData = (id) => {
     try {
       return await client.query(
         'SELECT id, name, email, balance FROM users WHERE id = $1',
-        [1]
+        [id]
+      );
+    } finally {
+      client.release();
+    }
+  })();
+};
+
+// Checks to see if a user with an email already exists in the database
+module.exports.checkExisting = (email) => {
+  return (async () => {
+    const client = await pool.connect();
+    try {
+      return await client.query(`SELECT id FROM users WHERE email = $1`, [
+        email,
+      ]);
+    } finally {
+      client.release();
+    }
+  })();
+};
+
+// Inserts a new user into the database
+module.exports.addUser = ({ email, name, password }) => {
+  console.log(email, name, password);
+
+  return (async () => {
+    const client = await pool.connect();
+    try {
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      return await client.query(
+        `INSERT INTO users (name, password, email, balance) VALUES ($1, $2, $3, $4)`,
+        [name, hashedPassword, email, (5000).toFixed(2)]
       );
     } finally {
       client.release();

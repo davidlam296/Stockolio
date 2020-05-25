@@ -54,7 +54,21 @@ export const Register = () => {
     if (Object.values(updatedErrors).includes(true)) {
       return;
     } else {
-      // check database for duplicate email; create account otherwise
+      axios
+        .post('/api/user', { name, email, password })
+        .then((response) => {
+          if (response.status === 201) {
+            setIsRegistered(true);
+          }
+        })
+        .catch((err) => {
+          if (err.response.status === 422) {
+            setErrors(Object.assign({}, errors, { email: true }));
+          }
+          if (err.response.status === 409) {
+            setErrors(Object.assign({}, errors, { duplicate: true }));
+          }
+        });
     }
   };
 
