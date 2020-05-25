@@ -4,7 +4,7 @@ import { formatTransactions } from '../../helper';
 
 export const Portfolio = ({
   transactions,
-  userInfo,
+  balance,
   updateTransactions,
   updateBalance,
 }) => {
@@ -28,7 +28,7 @@ export const Portfolio = ({
           {portData.stocks && !portData.error ? (
             portData.stocks.map((stock) => {
               return (
-                <div key={`${userInfo.id}+${stock.symbol}`}>
+                <div key={`1+${stock.symbol}`}>
                   <p>{`${stock.symbol} - ${stock.quantity}`}</p>
                   <p>
                     $
@@ -50,7 +50,7 @@ export const Portfolio = ({
           )}
         </div>
         <Purchase
-          userInfo={userInfo}
+          balance={balance}
           updateTransactions={updateTransactions}
           updateBalance={updateBalance}
         />

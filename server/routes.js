@@ -4,7 +4,7 @@ const { getPrice } = require('../helper/api');
 const { getTransactions, addTransaction, getUserData } = require('./models');
 
 // Retrieves current stock information, based on ticker symbol and sends it to client.
-router.get('/api/prices', (req, res) => {
+router.get('/prices', (req, res) => {
   if (!req.query.stocks) {
     res.sendStatus(400);
   } else {
@@ -63,10 +63,6 @@ router.post('/transactions', (req, res) => {
       // console.log('ERROR: ', err);
       res.sendStatus(400);
     });
-});
-
-router.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 module.exports = router;

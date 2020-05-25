@@ -1,15 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './components/App';
+import { Main } from './components/Main';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom';
+
+const App = () => (
+  <Router>
+    <Switch>
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/home" component={Main} />
+      <Redirect to="/login" />
+    </Switch>
+  </Router>
+);
 
 ReactDOM.render(
-  <Router>
-    <Route path="/login" component={Login} />
-    <Route path="/register" component={Register} />
-    <Route path="/home" component={App} />
-  </Router>,
+  <AuthProvider>
+    <App />
+  </AuthProvider>,
   document.getElementById('app')
 );

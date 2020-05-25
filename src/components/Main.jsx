@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Portfolio } from './Portfolio';
 import { Transactions } from './Transactions';
 import { Navigation } from './Navigation';
+import AuthContext from '../context/AuthContext';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 const PAGE_TYPES = ['Portfolio', 'Transactions'];
 
-// User Info should be passed down props after authentication
-export const App = (props) => {
+export const Main = () => {
+  const { isLoggedIn, userInfo } = useContext(AuthContext);
+
+  if (!isLoggedIn) {
+    return <Redirect to="/login" />;
+  }
+
   const [transactions, setTransactions] = useState({});
-  const [userInfo, setUserInfo] = useState({});
+  const [balance, setBalance] = useState(0);
   const [currentPage, setCurrentPage] = useState('portfolio');
 
   const updateTransactions = () => {
     axios
-      .get('/transactions', { params: { userId: 1 } })
+      .get('/api/transactions', { params: { userId: 1 } })
       .then((result) => {
         setTransactions(result.data);
       })
@@ -24,19 +31,16 @@ export const App = (props) => {
   };
 
   const updateBalance = (newBalance) => {
-    setUserInfo(Object.assign({}, userInfo, { balance: newBalance }));
+    setBalance(newBalance);
   };
 
   // Temporarily grab user data prior to setting up auth
   useEffect(() => {
     axios
-      .get('/user')
+      .get('/api/user')
       .then((results) => {
-        setUserInfo(
-          Object.assign({}, results.data, {
-            balance: Number(results.data.balance),
-          })
-        );
+        console.log(results);
+        setBalance(results.data.balance);
         updateTransactions();
       })
       .catch((err) => console.log('ERROR: ', err));
@@ -50,7 +54,7 @@ export const App = (props) => {
       ) : (
         <Portfolio
           transactions={transactions}
-          userInfo={userInfo}
+          balance={balance}
           updateTransactions={updateTransactions}
           updateBalance={updateBalance}
         />
