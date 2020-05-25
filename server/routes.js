@@ -37,6 +37,11 @@ router.get('/user', (req, res) => {
     });
 });
 
+// Create a user, check if user exists first, save into database otherwise
+router.post('/user', (req, res) => {
+
+})
+
 // Retrieves transaction data of a user, based on user ID and sends it to client.
 router.get('/transactions', (req, res) => {
   if (!req.query.userId) {
