@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import AuthContext from '../context/AuthContext';
 
 export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
   const [ticker, setTicker] = useState('');

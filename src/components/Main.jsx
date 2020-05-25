@@ -9,7 +9,7 @@ import axios from 'axios';
 const PAGE_TYPES = ['Portfolio', 'Transactions'];
 
 export const Main = () => {
-  const { isLoggedIn, userInfo } = useContext(AuthContext);
+  const { isLoggedIn } = useContext(AuthContext);
 
   if (!isLoggedIn) {
     return <Redirect to="/login" />;
@@ -21,7 +21,7 @@ export const Main = () => {
 
   const updateTransactions = () => {
     axios
-      .get('/api/transactions', { params: { userId: 1 } })
+      .get('/api/transactions', { params: { userId: isLoggedIn.id } })
       .then((result) => {
         setTransactions(result.data);
       })
@@ -30,16 +30,10 @@ export const Main = () => {
       });
   };
 
-  const updateBalance = (newBalance) => {
-    setBalance(newBalance);
-  };
-
-  // Temporarily grab user data prior to setting up auth
   useEffect(() => {
     axios
-      .get('/api/user')
+      .get('/api/user', { params: { userId: isLoggedIn.id } })
       .then((results) => {
-        console.log(results);
         setBalance(results.data.balance);
         updateTransactions();
       })
@@ -56,7 +50,7 @@ export const Main = () => {
           transactions={transactions}
           balance={balance}
           updateTransactions={updateTransactions}
-          updateBalance={updateBalance}
+          updateBalance={setBalance}
         />
       )}
     </div>

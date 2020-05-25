@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import axios from 'axios';
 
 export const Register = () => {
@@ -115,6 +115,9 @@ export const Register = () => {
         <p>{errorMessages.reenteredPassword}</p>
       ) : null}
       <button onClick={handleSubmit}>Register!</button>
+      <Link to="/login">
+        <p>Already registered?</p>
+      </Link>
     </div>
   );
 };

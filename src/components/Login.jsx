@@ -17,9 +17,8 @@ export const Login = () => {
       setIsError(true);
       return;
     } else {
-      setIsError(false);
       if (!authenticate(email, password)) {
-        setIsError(false);
+        setIsError(true);
       }
     }
   };
