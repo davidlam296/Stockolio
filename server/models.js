@@ -7,10 +7,7 @@ module.exports.getUserData = (id) => {
   return (async () => {
     const client = await pool.connect();
     try {
-      return await client.query(
-        'SELECT id, name, email, balance FROM users WHERE id = $1',
-        [id]
-      );
+      return await client.query('SELECT * FROM users WHERE id = $1', [id]);
     } finally {
       client.release();
     }
@@ -33,8 +30,6 @@ module.exports.checkExisting = (email) => {
 
 // Inserts a new user into the database
 module.exports.addUser = ({ email, name, password }) => {
-  console.log(email, name, password);
-
   return (async () => {
     const client = await pool.connect();
     try {

@@ -1,6 +1,8 @@
+require('dotenv').config();
 const router = require('express').Router();
 const { getPrice } = require('../helper/api');
 const { validateEmail } = require('../helper/validate');
+const { auth } = require('./authMiddleware');
 const {
   getTransactions,
   addTransaction,
@@ -9,8 +11,13 @@ const {
   addUser,
 } = require('./models');
 
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+// PROTECTED
 // Retrieves current stock information, based on ticker symbol and sends it to client.
-router.get('/prices', (req, res) => {
+router.get('/prices', auth, (req, res) => {
   if (!req.query.stocks) {
     res.sendStatus(400);
   } else {
@@ -31,20 +38,59 @@ router.get('/prices', (req, res) => {
   }
 });
 
-// Retrieves user information from database -- login
-router.get('/user', (req, res) => {
-  getUserData()
-    .then((result) => {
-      res.status(200).send(result.rows[0]);
+// Authenticates user login attempt
+router.post('/authenticate', (req, res) => {
+  const { email, password } = req.body;
+  const userData = {};
+
+  checkExisting(email)
+    .then(({ rows }) => {
+      const { id } = rows[0];
+      userData.id = id;
+      return getUserData(id);
     })
-    .catch((err) => {
-      // console.log('ERROR: ', err);
-      res.sendStatus(400);
-    });
+    .then(({ rows }) => {
+      const hash = rows[0].password;
+      const { name, email } = rows[0];
+      userData.name = name;
+      userData.email = email;
+      return bcrypt.compare(password, hash);
+    })
+    .then((result) => {
+      if (result) {
+        const token = jwt.sign({ email }, process.env.SECRET, {
+          expiresIn: '1h',
+        });
+        res
+          .cookie('stockolio', token, { httpOnly: true })
+          .status(200)
+          .send(userData);
+      } else {
+        res.sendStatus(401);
+      }
+    })
+    .catch((err) => res.sendStatus(500));
+});
+
+// PROTECTED
+// Retrieves user information from database -- login
+router.get('/user', auth, (req, res) => {
+  if (!req.query.userId) {
+    res.sendStatus(400);
+  } else {
+    getUserData(req.query.userId)
+      .then((result) => {
+        res.status(200).send(result.rows[0]);
+      })
+      .catch((err) => {
+        // console.log('ERROR: ', err);
+        res.sendStatus(400);
+      });
+  }
 });
 
 // Create a user, check if user exists first, save into database otherwise
-router.post('/user', (req, res) => {
+router.post('/user', auth, (req, res) => {
   const { email, password, name } = req.body;
 
   if (!email || !password || !name) {
@@ -70,8 +116,9 @@ router.post('/user', (req, res) => {
   }
 });
 
+// PROTECTED
 // Retrieves transaction data of a user, based on user ID and sends it to client.
-router.get('/transactions', (req, res) => {
+router.get('/transactions', auth, (req, res) => {
   if (!req.query.userId) {
     res.sendStatus(400);
   } else {
@@ -86,8 +133,9 @@ router.get('/transactions', (req, res) => {
   }
 });
 
+// PROTECTED
 // Saves transaction information into database, based on requset from client.
-router.post('/transactions', (req, res) => {
+router.post('/transactions', auth, (req, res) => {
   addTransaction(req.body)
     .then((result) => {
       res.status(201).send(result.rows[0].balance);
