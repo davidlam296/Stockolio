@@ -1,5 +1,5 @@
 {
-  "name": "stock-olio",
+  "name": "stockolio",
   "version": "1.0.0",
   "description": "Stock portfolio management application",
   "main": "index.js",

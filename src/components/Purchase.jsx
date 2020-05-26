@@ -3,7 +3,12 @@ import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import '../styles/purchase.css';
 
-export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
+export const Purchase = ({
+  balance,
+  updateTransactions,
+  updateBalance,
+  setPortData,
+}) => {
   const { isLoggedIn } = useContext(AuthContext);
 
   const [ticker, setTicker] = useState('');
@@ -61,6 +66,7 @@ export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
           axios
             .post('/api/transactions', transaction)
             .then((newBalance) => {
+              setPortData(null);
               updateTransactions();
               updateBalance(newBalance.data);
             })

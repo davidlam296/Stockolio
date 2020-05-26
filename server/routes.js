@@ -117,7 +117,6 @@ router.get('/prices', auth, (req, res) => {
 
     Promise.all(prices)
       .then((data) => {
-        console.log(data);
         res.status(200).send(data);
       })
       .catch((err) => {

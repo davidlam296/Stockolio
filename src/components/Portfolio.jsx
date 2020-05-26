@@ -62,6 +62,7 @@ export const Portfolio = ({
           balance={balance}
           updateTransactions={updateTransactions}
           updateBalance={updateBalance}
+          setPortData={setPortData}
         />
       </div>
     </div>
