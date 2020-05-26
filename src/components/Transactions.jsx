@@ -6,6 +6,7 @@ export const Transactions = ({ transactions }) => {
   return (
     <div id="transactions">
       <h1>Transactions</h1>
+      {transactions.length < 1 ? <p>No trasactions yet.</p> : null}
       {transactions.map((t) => (
         <p key={t.id}>
           {`${TYPE_OF_TRANS[t.type]} (${t.ticker_symbol}) - ${
