@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken');
 
 module.exports.auth = (req, res, next) => {
   const token = req.cookies.stockolio;
-  console.log(token);
-  console.log(req.cookies);
 
   if (!token) {
     res.status(401).send('Unauthorized: No token provided');
