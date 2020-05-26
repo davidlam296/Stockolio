@@ -87,6 +87,11 @@ router.post('/user', (req, res) => {
   }
 });
 
+router.get('/logout', (req, res) => {
+  res.clearCookie('stockolio');
+  res.sendStatus(200);
+});
+
 /*
 ╭━━━╮╱╱╱╱╭╮╱╱╱╱╱╱╭╮╱╱╱╱╱╭╮╭━━━╮╱╱╱╱╱╭╮
 ┃╭━╮┃╱╱╱╭╯╰╮╱╱╱╱╭╯╰╮╱╱╱╱┃┃┃╭━╮┃╱╱╱╱╭╯╰╮

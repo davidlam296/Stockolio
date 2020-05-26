@@ -17,12 +17,16 @@ export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
       // Ticker input is empty and invalid. Display warning message.
       setValidTicker(false);
       return;
+    } else {
+      setValidTicker(true);
     }
 
     if (!Number.isInteger(Number(quantity)) || quantity <= 0) {
       // Quantity input is invalid. Display warning message.
       setValidQuantity(false);
       return;
+    } else {
+      setValidQuantity(true);
     }
 
     const transaction = {
@@ -84,20 +88,37 @@ export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
         placeholder="Ticker"
         onChange={(e) => setTicker(e.target.value)}
       ></input>
-      {validTicker === false ? (
-        <p>Invalid ticker symbol. Please re-enter.</p>
-      ) : null}
+      <p
+        style={{
+          color: 'red',
+          visibility: validTicker === false ? 'visible' : 'hidden',
+        }}
+      >
+        Invalid ticker symbol. Please re-enter.
+      </p>
       <h3>Quantity</h3>
       <input
         value={quantity}
         placeholder="Quantity"
         onChange={(e) => setQuantity(e.target.value)}
       ></input>
-      {validQuantity === false ? (
-        <p>Invalid quantity. Enter a positive, whole number only.</p>
-      ) : null}
+      <p
+        style={{
+          color: 'red',
+          visibility: validQuantity === false ? 'visible' : 'hidden',
+        }}
+      >
+        Enter a positive, whole number only.
+      </p>
       <button onClick={handleSubmit}>Buy</button>
-      {validBuy.valid === false ? <p>{validBuy.message}</p> : null}
+      <p
+        style={{
+          color: 'red',
+          visibility: validBuy.valid === false ? 'visible' : 'hidden',
+        }}
+      >
+        {validBuy.message || 'a\nb'}
+      </p>
     </div>
   );
 };

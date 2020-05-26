@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Portfolio } from './Portfolio';
 import { Transactions } from './Transactions';
 import { Navigation } from './Navigation';
-import AuthContext from '../context/AuthContext';
 import { Redirect } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 import axios from 'axios';
 import '../styles/main.css';
 
@@ -16,7 +16,7 @@ export const Main = () => {
     return <Redirect to="/login" />;
   }
 
-  const [transactions, setTransactions] = useState({});
+  const [transactions, setTransactions] = useState([]);
   const [balance, setBalance] = useState(0);
   const [currentPage, setCurrentPage] = useState('portfolio');
 

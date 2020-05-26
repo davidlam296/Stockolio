@@ -17,7 +17,12 @@
   font-size: 0.7em;
   width: 80%;
   height: 2em;
-  margin-bottom: 7%;
+  margin-bottom: 1em;
+}
+
+#purchase p {
+  width: 80%;
+  margin-bottom: 1em;
 }
 
 #purchase h3 {

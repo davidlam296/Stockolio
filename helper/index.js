@@ -60,5 +60,12 @@ export const formatTransactions = (transactions) => {
     if (data.quantity <= 0) stocks.delete(sym);
   });
 
-  return updatePrices(portfolio);
+  if (portfolio.stocks.size > 0) {
+    return updatePrices(portfolio);
+  } else {
+    portfolio.stocks = [];
+    return new Promise((resolve, reject) => {
+      resolve(portfolio);
+    });
+  }
 };

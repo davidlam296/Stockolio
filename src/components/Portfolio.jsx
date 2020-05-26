@@ -11,16 +11,16 @@ export const Portfolio = ({
   updateBalance,
 }) => {
   // portData is the formatted data that would be displayed in the Portfolio component, based on transactions
-  const [portData, setPortData] = useState([]);
+  const [portData, setPortData] = useState(null);
   const { isLoggedIn } = useContext(AuthContext);
 
   // update portfolio if transactions change
   useEffect(() => {
-    if (transactions.length > 0) {
-      formatTransactions(transactions).then((portfolio) => {
+    formatTransactions(transactions)
+      .then((portfolio) => {
         setPortData(portfolio);
-      });
-    }
+      })
+      .catch((err) => console.log(err));
   }, [transactions]);
 
   return (
@@ -28,7 +28,7 @@ export const Portfolio = ({
       <h1>Portfolio</h1>
       <div id="port-container">
         <div id="portfolio-stocks">
-          {portData.stocks && !portData.error ? (
+          {portData && portData.stocks.length > 0 && !portData.error ? (
             portData.stocks.map((stock) => {
               return (
                 <div
@@ -52,10 +52,10 @@ export const Portfolio = ({
                 </div>
               );
             })
-          ) : portData.stocks && portData.stocks.length < 1 ? (
-            <p>{'No stocks found...'}</p>
-          ) : (
+          ) : portData === null ? (
             <p>{'Loading stocks...'}</p>
+          ) : (
+            <p>{'No stocks found...'}</p>
           )}
         </div>
         <Purchase
