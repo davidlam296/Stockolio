@@ -18,6 +18,10 @@
   color: var(--third-color);
 }
 
+#login a:hover {
+  color: var(--second-color);
+}
+
 #login h1 {
   margin-bottom: 4%;
 }
@@ -42,4 +46,8 @@
   margin-bottom: 2%;
   color: rgba(255, 255, 255, 1);
   background-color: var(--main-color);
+}
+
+#login button:hover {
+  background-color: var(--second-color);
 }

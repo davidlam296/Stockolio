@@ -36,3 +36,7 @@
   width: 50%;
   border-left: 1px solid black;
 }
+
+#links p:hover {
+  color: var(--bg-color);
+}

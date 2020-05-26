@@ -137,7 +137,7 @@ export const Register = () => {
       >
         {errorMessages.reenteredPassword}
       </p>
-      <button onClick={handleSubmit}>Register!</button>
+      <button onClick={handleSubmit}>Sign Up!</button>
       <Link to="/login">
         <h3>Already have an account?</h3>
       </Link>
