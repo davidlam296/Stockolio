@@ -15,28 +15,15 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-// PROTECTED
-// Retrieves current stock information, based on ticker symbol and sends it to client.
-router.get('/prices', auth, (req, res) => {
-  if (!req.query.stocks) {
-    res.sendStatus(400);
-  } else {
-    const prices = [];
-
-    for (const symbol of req.query.stocks) {
-      prices.push(getPrice(symbol));
-    }
-
-    Promise.all(prices)
-      .then((data) => {
-        res.status(200).send(data);
-      })
-      .catch((err) => {
-        // console.log('ERROR :', err);
-        res.sendStatus(500);
-      });
-  }
-});
+/*
+╭╮╱╭╮╱╱╱╱╱╱╱╱╱╱╭╮╱╱╱╱╱╱╭╮╱╱╱╱╱╭╮╭━━━╮╱╱╱╱╱╭╮
+┃┃╱┃┃╱╱╱╱╱╱╱╱╱╭╯╰╮╱╱╱╱╭╯╰╮╱╱╱╱┃┃┃╭━╮┃╱╱╱╱╭╯╰╮
+┃┃╱┃┣━╮╭━━┳━┳━┻╮╭╋━━┳━┻╮╭╋━━┳━╯┃┃╰━╯┣━━┳╮┣╮╭╋━━┳━━╮
+┃┃╱┃┃╭╮┫╭╮┃╭┫╭╮┃┃┃┃━┫╭━┫┃┃┃━┫╭╮┃┃╭╮╭┫╭╮┃┃┃┃┃┃┃━┫━━┫
+┃╰━╯┃┃┃┃╰╯┃┃┃╰╯┃╰┫┃━┫╰━┫╰┫┃━┫╰╯┃┃┃┃╰┫╰╯┃╰╯┃╰┫┃━╋━━┃
+╰━━━┻╯╰┫╭━┻╯╰━━┻━┻━━┻━━┻━┻━━┻━━╯╰╯╰━┻━━┻━━┻━┻━━┻━━╯
+╱╱╱╱╱╱╱┃┃
+╱╱╱╱╱╱╱╰╯ */
 
 // Authenticates user login attempt
 router.post('/authenticate', (req, res) => {
@@ -72,25 +59,8 @@ router.post('/authenticate', (req, res) => {
     .catch((err) => res.sendStatus(500));
 });
 
-// PROTECTED
-// Retrieves user information from database -- login
-router.get('/user', auth, (req, res) => {
-  if (!req.query.userId) {
-    res.sendStatus(400);
-  } else {
-    getUserData(req.query.userId)
-      .then((result) => {
-        res.status(200).send(result.rows[0]);
-      })
-      .catch((err) => {
-        // console.log('ERROR: ', err);
-        res.sendStatus(400);
-      });
-  }
-});
-
-// Create a user, check if user exists first, save into database otherwise
-router.post('/user', auth, (req, res) => {
+// Create a user
+router.post('/user', (req, res) => {
   const { email, password, name } = req.body;
 
   if (!email || !password || !name) {
@@ -98,6 +68,7 @@ router.post('/user', auth, (req, res) => {
   } else if (!validateEmail(email)) {
     res.sendStatus(422);
   } else {
+    // Check to see if a user exists first - based on email
     checkExisting(req.body.email)
       .then((result) => {
         if (result.rows.length > 0) {
@@ -116,8 +87,54 @@ router.post('/user', auth, (req, res) => {
   }
 });
 
-// PROTECTED
-// Retrieves transaction data of a user, based on user ID and sends it to client.
+/*
+╭━━━╮╱╱╱╱╭╮╱╱╱╱╱╱╭╮╱╱╱╱╱╭╮╭━━━╮╱╱╱╱╱╭╮
+┃╭━╮┃╱╱╱╭╯╰╮╱╱╱╱╭╯╰╮╱╱╱╱┃┃┃╭━╮┃╱╱╱╱╭╯╰╮
+┃╰━╯┣━┳━┻╮╭╋━━┳━┻╮╭╋━━┳━╯┃┃╰━╯┣━━┳╮┣╮╭╋━━┳━━╮
+┃╭━━┫╭┫╭╮┃┃┃┃━┫╭━┫┃┃┃━┫╭╮┃┃╭╮╭┫╭╮┃┃┃┃┃┃┃━┫━━┫
+┃┃╱╱┃┃┃╰╯┃╰┫┃━┫╰━┫╰┫┃━┫╰╯┃┃┃┃╰┫╰╯┃╰╯┃╰┫┃━╋━━┃
+╰╯╱╱╰╯╰━━┻━┻━━┻━━┻━┻━━┻━━╯╰╯╰━┻━━┻━━┻━┻━━┻━━╯
+*/
+
+// Retrieves current stock information - based on ticker symbol
+router.get('/prices', auth, (req, res) => {
+  if (!req.query.stocks) {
+    res.sendStatus(400);
+  } else {
+    const prices = [];
+
+    for (const symbol of req.query.stocks) {
+      prices.push(getPrice(symbol));
+    }
+
+    Promise.all(prices)
+      .then((data) => {
+        res.status(200).send(data);
+      })
+      .catch((err) => {
+        // console.log('ERROR :', err);
+        res.sendStatus(500);
+      });
+  }
+});
+
+// Retrieves user information from database - based on user ID
+router.get('/user', auth, (req, res) => {
+  if (!req.query.userId) {
+    res.sendStatus(400);
+  } else {
+    getUserData(req.query.userId)
+      .then((result) => {
+        res.status(200).send(result.rows[0]);
+      })
+      .catch((err) => {
+        // console.log('ERROR: ', err);
+        res.sendStatus(400);
+      });
+  }
+});
+
+// Retrieves transaction data of a user - based on user ID
 router.get('/transactions', auth, (req, res) => {
   if (!req.query.userId) {
     res.sendStatus(400);
@@ -133,8 +150,13 @@ router.get('/transactions', auth, (req, res) => {
   }
 });
 
-// PROTECTED
-// Saves transaction information into database, based on requset from client.
+/*  Insert transaction into database.
+    Required Fields:
+      type: type of transaction,
+      ticker: stock symbol,
+      quantity: number of stocks purchased,
+      cost: cost per share,
+      userId: user ID associated with transaction  */
 router.post('/transactions', auth, (req, res) => {
   addTransaction(req.body)
     .then((result) => {
