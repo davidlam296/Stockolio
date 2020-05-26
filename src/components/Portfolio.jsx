@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Purchase } from './Purchase';
 import { formatTransactions } from '../../helper';
+import AuthContext from '../context/AuthContext';
 
 export const Portfolio = ({
   transactions,
@@ -10,6 +11,8 @@ export const Portfolio = ({
 }) => {
   // portData is the formatted data that would be displayed in the Portfolio component, based on transactions
   const [portData, setPortData] = useState([]);
+
+  const { isLoggedIn } = useContext(AuthContext);
 
   // update portfolio if transactions change
   useEffect(() => {
@@ -28,7 +31,7 @@ export const Portfolio = ({
           {portData.stocks && !portData.error ? (
             portData.stocks.map((stock) => {
               return (
-                <div key={`1+${stock.symbol}`}>
+                <div key={`${isLoggedIn.id}+${stock.symbol}`}>
                   <p>{`${stock.symbol} - ${stock.quantity}`}</p>
                   <p>
                     $

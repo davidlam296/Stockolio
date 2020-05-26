@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 
 export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
+  const { isLoggedIn } = useContext(AuthContext);
+
   const [ticker, setTicker] = useState('');
   const [quantity, setQuantity] = useState('');
   const [validTicker, setValidTicker] = useState(null);
@@ -26,7 +28,7 @@ export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
       type: 0,
       ticker: ticker.toUpperCase(),
       quantity: Number(quantity),
-      userId: 1,
+      userId: isLoggedIn.id,
     };
 
     setValidTicker(true);
@@ -43,7 +45,7 @@ export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
         );
 
         // Not enough funds. Display warning message.
-        if (total > balance) {
+        if (Number(total) > Number(balance)) {
           setValidBuy({
             valid: false,
             message: `Insufficent funds. Unable to purchase ${transaction.quantity} share(s) of (${transaction.ticker}) at $${transaction.cost} each. Your remaining balance is $${balance}. Total cost is $${total}.`,
@@ -74,7 +76,7 @@ export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
 
   return (
     <div>
-      <h1>{`Cash - $${balance ? balance : 0}`}</h1>
+      <h1>{`Cash - $${balance ? Number(balance).toFixed(2) : 0}`}</h1>
       <h3>Stock Symbol</h3>
       <input
         value={ticker}
