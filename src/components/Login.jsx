@@ -11,14 +11,14 @@ export const Login = () => {
 
   const errorMessage = 'Invalid username or password.';
 
-  const attemptLogin = () => {
+  const attemptLogin = async () => {
     /*  If length of input password or email is less than 6, just display warning message
         Will be set as minimum requirements when registering.  */
     if (email.trim().length < 6 || password.trim().length < 6) {
       setIsError(true);
       return;
     } else {
-      if (!authenticate(email, password)) {
+      if (!(await authenticate(email, password))) {
         setIsError(true);
       }
     }
