@@ -106,14 +106,18 @@ router.get('/prices', auth, (req, res) => {
   if (!req.query.stocks) {
     res.sendStatus(400);
   } else {
+    // const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
+    const stocks = [...req.query.stocks];
     const prices = [];
+    const DELAY = 100;
 
-    for (const symbol of req.query.stocks) {
-      prices.push(getPrice(symbol));
-    }
+    stocks.forEach(async (stock, index) => {
+      prices.push(getPrice(stock, DELAY * index));
+    });
 
     Promise.all(prices)
       .then((data) => {
+        console.log(data);
         res.status(200).send(data);
       })
       .catch((err) => {
