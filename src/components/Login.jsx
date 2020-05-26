@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
+import '../styles/login.css';
 
 export const Login = () => {
   const { authenticate, isLoggedIn } = useContext(AuthContext);
@@ -8,7 +9,7 @@ export const Login = () => {
   const [password, setPassword] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const errorMessage = 'Invalid username or password. Please re-enter.';
+  const errorMessage = 'Invalid username or password.';
 
   const attemptLogin = () => {
     /*  If length of input password or email is less than 6, just display warning message
@@ -29,7 +30,7 @@ export const Login = () => {
 
   return (
     <div id="login">
-      <h1>Login</h1>
+      <h1>Sign In</h1>
       <p>Email:</p>
       <input
         type="email"
@@ -45,9 +46,11 @@ export const Login = () => {
         placeholder="Enter password"
       />
       <button onClick={(e) => attemptLogin()}>Log in!</button>
-      {isError ? <p>{errorMessage}</p> : null}
+      <p style={{ color: 'red', visibility: isError ? 'visible' : 'hidden' }}>
+        {errorMessage}
+      </p>
       <Link to="/register">
-        <p>Don't have an account?</p>
+        <h3>Don't have an account?</h3>
       </Link>
     </div>
   );

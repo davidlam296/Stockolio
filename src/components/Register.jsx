@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/register.css';
 
 export const Register = () => {
   const [isRegistered, setIsRegistered] = useState(false);
@@ -19,8 +20,8 @@ export const Register = () => {
   const errorMessages = {
     name: 'Name can not be empty',
     email: 'Please enter valid email address',
-    password: 'Password must contain at least 6 characters',
-    reenteredPassword: 'Does not match password',
+    password: 'Password must contain 6 characters',
+    reenteredPassword: 'Password does not match',
     duplicate: 'Email is already registered',
   };
 
@@ -86,7 +87,11 @@ export const Register = () => {
         value={name}
         placeholder="Enter name"
       />
-      {errors.name ? <p>{errorMessages.name}</p> : null}
+      <p
+        style={{ color: 'red', visibility: errors.name ? 'visible' : 'hidden' }}
+      >
+        {errorMessages.name}
+      </p>
       <p>Email:</p>
       <input
         type="email"
@@ -94,8 +99,14 @@ export const Register = () => {
         value={email}
         placeholder="Enter email"
       />
-      {errors.email ? <p>{errorMessages.email}</p> : null}
-      {errors.duplicate ? <p>{errorMessages.duplicate}</p> : null}
+      <p
+        style={{
+          color: 'red',
+          visibility: errors.email || errors.duplicate ? 'visible' : 'hidden',
+        }}
+      >
+        {errors.email ? errorMessages.email : errorMessages.duplicate}
+      </p>
       <p>Password:</p>
       <input
         type="password"
@@ -103,7 +114,14 @@ export const Register = () => {
         value={password}
         placeholder="Enter password"
       />
-      {errors.password ? <p>{errorMessages.password}</p> : null}
+      <p
+        style={{
+          color: 'red',
+          visibility: errors.password ? 'visible' : 'hidden',
+        }}
+      >
+        {errorMessages.password}
+      </p>
       <p>Re-enter password:</p>
       <input
         type="password"
@@ -111,12 +129,17 @@ export const Register = () => {
         value={reenteredPassword}
         placeholder="Enter password again"
       />
-      {errors.reenteredPassword ? (
-        <p>{errorMessages.reenteredPassword}</p>
-      ) : null}
+      <p
+        style={{
+          color: 'red',
+          visibility: errors.reenteredPassword ? 'visible' : 'hidden',
+        }}
+      >
+        {errorMessages.reenteredPassword}
+      </p>
       <button onClick={handleSubmit}>Register!</button>
       <Link to="/login">
-        <p>Already registered?</p>
+        <h3>Already have an account?</h3>
       </Link>
     </div>
   );
