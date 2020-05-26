@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/transactions.css';
 const TYPE_OF_TRANS = ['BUY', 'SELL'];
 
 export const Transactions = ({ transactions }) => {

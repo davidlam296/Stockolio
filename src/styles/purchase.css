@@ -1,0 +1,36 @@
+#purchase {
+  width: 49%;
+  min-width: 400px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-left: 1px solid black;
+}
+
+#purchase h2 {
+  margin-bottom: 8%;
+}
+
+#purchase input {
+  font-size: 0.7em;
+  width: 80%;
+  height: 2em;
+  margin-bottom: 7%;
+}
+
+#purchase h3 {
+  align-self: flex-start;
+  margin-left: 10%;
+  margin-bottom: 2%;
+}
+
+#purchase button {
+  width: 80%;
+  height: 2em;
+  font-size: 1.4em;
+  margin-bottom: 2%;
+  color: rgba(255, 255, 255, 1);
+  background-color: var(--main-color);
+}

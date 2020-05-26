@@ -5,6 +5,7 @@ import { Navigation } from './Navigation';
 import AuthContext from '../context/AuthContext';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/main.css';
 
 const PAGE_TYPES = ['Portfolio', 'Transactions'];
 
@@ -31,17 +32,19 @@ export const Main = () => {
   };
 
   useEffect(() => {
-    axios
-      .get('/api/user', { params: { userId: isLoggedIn.id } })
-      .then((results) => {
-        setBalance(results.data.balance);
-        updateTransactions();
-      })
-      .catch((err) => console.log('ERROR: ', err));
+    if (isLoggedIn) {
+      axios
+        .get('/api/user', { params: { userId: isLoggedIn.id } })
+        .then((results) => {
+          setBalance(results.data.balance);
+          updateTransactions();
+        })
+        .catch((err) => console.log('ERROR: ', err));
+    }
   }, []);
 
   return (
-    <div>
+    <div id="main-container">
       <Navigation changePage={setCurrentPage} pages={PAGE_TYPES} />
       {currentPage === 'Transactions' ? (
         <Transactions transactions={transactions} />

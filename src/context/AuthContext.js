@@ -7,7 +7,10 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const authenticate = async (email, password) => {
-    const response = await axios.post('/api/authenticate', { email, password });
+    const response = await axios
+      .post('/api/authenticate', { email, password })
+      .then((response) => response)
+      .catch((err) => err);
 
     if (response.status === 200) {
       await setIsLoggedIn(response.data);

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
+import '../styles/purchase.css';
 
 export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -75,8 +76,8 @@ export const Purchase = ({ balance, updateTransactions, updateBalance }) => {
   };
 
   return (
-    <div>
-      <h1>{`Cash - $${balance ? Number(balance).toFixed(2) : 0}`}</h1>
+    <div id="purchase">
+      <h2>{`Cash - $${balance ? Number(balance).toFixed(2) : 0}`}</h2>
       <h3>Stock Symbol</h3>
       <input
         value={ticker}
