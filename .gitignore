@@ -5,6 +5,7 @@ dist/*
 node_modules/
 *.log
 .env
+docker-compose.yml
 
 # OS generated files
 .DS_Store
