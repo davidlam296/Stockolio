@@ -4,7 +4,7 @@ import axios from 'axios';
 const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   const authenticate = async (email, password) => {
     const response = await axios
@@ -16,7 +16,21 @@ export const AuthProvider = ({ children }) => {
       await setIsLoggedIn(response.data);
       return true;
     } else {
+      await setIsLoggedIn(false);
       return false;
+    }
+  };
+
+  const checkToken = async (token) => {
+    const response = await axios
+      .get('/api/checkToken')
+      .then((response) => response)
+      .catch((err) => err);
+
+    if (response.status === 200) {
+      await setIsLoggedIn(response.data);
+    } else {
+      await setIsLoggedIn(false);
     }
   };
 
@@ -25,6 +39,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         isLoggedIn,
         setIsLoggedIn,
+        checkToken,
         authenticate,
       }}
     >

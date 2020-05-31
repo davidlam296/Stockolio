@@ -9,6 +9,7 @@ module.exports.auth = (req, res, next) => {
   } else {
     try {
       const decoded = jwt.verify(token, process.env.SECRET);
+      req.email = decoded.email;
       next();
     } catch {
       res.status(401).send('Unauthorized: Invalid token provided');

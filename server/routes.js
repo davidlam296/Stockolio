@@ -101,6 +101,21 @@ router.get('/logout', (req, res) => {
 ╰╯╱╱╰╯╰━━┻━┻━━┻━━┻━┻━━┻━━╯╰╯╰━┻━━┻━━┻━┻━━┻━━╯
 */
 
+// Verifies user token if already logged in
+router.get('/checkToken', auth, (req, res) => {
+  checkExisting(req.email)
+    .then(({ rows }) => {
+      const { id } = rows[0];
+      return getUserData(id);
+    })
+    .then((result) => {
+      res.status(200).send(result.rows[0]);
+    })
+    .catch(() => {
+      res.sendStatus(500);
+    });
+});
+
 // Retrieves current stock information - based on ticker symbol
 router.get('/prices', auth, (req, res) => {
   if (!req.query.stocks) {
