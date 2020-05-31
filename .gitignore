@@ -7,6 +7,8 @@ node_modules/
 *.log
 .env
 docker-compose.yml
+selfsigned.crt
+selfsigned.key
 
 # OS generated files
 .DS_Store

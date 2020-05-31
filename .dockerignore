@@ -2,5 +2,7 @@ docker-compose.yml
 pgdata
 node_modules
 .env
+selfsigned.crt
+selfsigned.key
 
 Dockerfile
