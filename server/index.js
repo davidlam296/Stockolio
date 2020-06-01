@@ -1,8 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
-const https = require('https');
 const cookieParser = require('cookie-parser');
 const routes = require('./routes.js');
 
@@ -23,11 +21,18 @@ if (process.env.DEV === '1') {
     console.log(`Go to: ${process.env.ROOT}:${process.env.PORT}`);
   });
 } else {
-  const key = fs.readFileSync(path.join(__dirname, '../selfsigned.key'));
-  const cert = fs.readFileSync(path.join(__dirname, '../selfsigned.crt'));
-  const server = https.createServer({ key, cert }, app);
-  server.listen(process.env.PORT, () => {
-    console.log(`Listening at port ${process.env.PORT}`);
-    console.log(`Go to: ${process.env.ROOT}:${process.env.PORT}`);
-  });
+  (async () => {
+    await app.listen(process.env.PORT, () => {
+      console.log(`Listening at port ${process.env.PORT}`);
+    });
+
+    require('greenlock-express')
+      .init({
+        packageRoot: path.join(__dirname, '../'),
+        configDir: '../greenlock',
+        maintainerEmail: 'david.lam296@gmail.com',
+        cluster: false,
+      })
+      .serve(app);
+  })();
 }
